@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { OptimizedImage } from '../components/OptimizedImage';
+import { PageBanner } from '../components/PageBanner';
+import styles from './Services.module.css';
 
 export const Services: React.FC = () => {
   const serviceCategories = [
@@ -110,31 +112,31 @@ export const Services: React.FC = () => {
   return (
     <div className="services-page-container">
       {/* PAGE BANNER */}
-      <section className="page-banner">
-        <h1>Our Services</h1>
-        <div className="page-banner-diamond"></div>
-        <p>Expertly curated, beautifully executed celebrations</p>
-      </section>
+      <PageBanner
+        title="Our Services"
+        description="Expertly curated, beautifully executed celebrations"
+      />
 
       {/* SERVICES CONTENT SECTION */}
       <section className="services-list-section">
-        <div className="services-grid-list">
+        <div className={styles.servicesGridList}>
           {serviceCategories.map((category) => (
-            <div key={category.id} className="service-card-new reveal-on-scroll" id={category.id}>
-              <div className="service-image-container">
+            <div key={category.id} className={`${styles.serviceCardNew} reveal-on-scroll`} id={category.id}>
+              <div className={styles.serviceImageContainer}>
                 <OptimizedImage
                   src={category.image}
                   alt={category.title}
                   width={800}
                   height={600}
                   className="service-bg-image"
+                  imgClassName={styles.serviceBgImage}
                   containerStyle={{ height: '100%', width: '100%' }}
                   aspectRatio="unset"
                 />
-                <div className="service-overlay-gradient"></div>
-                <div className="service-title-wrapper">
+                <div className={styles.serviceOverlayGradient}></div>
+                <div className={styles.serviceTitleWrapper}>
                   <h3>{category.title}</h3>
-                  <div className="service-hover-indicator">
+                  <div className={styles.serviceHoverIndicator}>
                     <span>View Details</span>
                     <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -142,9 +144,9 @@ export const Services: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="service-hover-details">
+              <div className={styles.serviceHoverDetails}>
                 <h4>What's Included</h4>
-                <ul className="service-items-list-new">
+                <ul className={styles.serviceItemsListNew}>
                   {category.items.map((item, idx) => (
                     <li key={idx}>{item}</li>
                   ))}
@@ -155,7 +157,7 @@ export const Services: React.FC = () => {
         </div>
 
         {/* Disclaimers / Footnotes */}
-        <div className="catering-disclaimer reveal-on-scroll">
+        <div className={`${styles.cateringDisclaimer} reveal-on-scroll`}>
           <p>
             <strong>Note on Catering:</strong> Taaffeite currently does not undertake catering services directly, but coordinates seamlessly with premium catering partners chosen by the client to maintain absolute culinary alignment and event flow.
           </p>

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { OptimizedImage } from '../components/OptimizedImage';
+import { PageBanner } from '../components/PageBanner';
+import styles from './Media.module.css';
 
 interface MediaPhoto {
   src: string;
@@ -54,8 +56,6 @@ export const Media: React.FC = () => {
     { src: '/assets/05 PHOTOS/Weddings/Sanhita & Benny-317 2.webp', alt: 'Pastel Hydrangea Dome Mandap Altar', width: 4631, height: 6946 },
     { src: '/assets/05 PHOTOS/Weddings/AKR05590.webp', alt: 'Courtyard Floral Stage Setup details', width: 2400, height: 3600 }
   ];
-
-  // Note: automatic eager preloading of all 40 high-res gallery images has been removed to reduce thread blocking and network saturation.
 
   // Lock scrolling when lightbox is open
   useEffect(() => {
@@ -117,14 +117,13 @@ export const Media: React.FC = () => {
   return (
     <div className="media-page-container">
       {/* PAGE BANNER */}
-      <section className="page-banner">
-        <h1>Media & Impressions</h1>
-        <div className="page-banner-diamond"></div>
-        <p>A visual gallery of our signature celebrations</p>
-      </section>
+      <PageBanner
+        title="Media & Impressions"
+        description="A visual gallery of our signature celebrations"
+      />
 
       {/* MEDIA INTRO */}
-      <section className="media-intro reveal-on-scroll">
+      <section className={`${styles.mediaIntro} reveal-on-scroll`}>
         <p>
           We curate moments that stay in memories forever. In our visual log, we share snippets of floral arrangements, architectural constructs, bespoke dinner styling, and guest hampers. Follow our ongoing journeys live on our social handles.
         </p>
@@ -133,11 +132,11 @@ export const Media: React.FC = () => {
 
       {/* MASONRY GALLERY */}
       <section className="gallery-section">
-        <div className="media-masonry" id="gallery-grid">
+        <div className={styles.mediaMasonry} id="gallery-grid">
           {photos.map((photo, index) => (
             <div 
               key={index} 
-              className="media-item reveal-on-scroll" 
+              className={`${styles.mediaItem} reveal-on-scroll`} 
               onClick={() => openLightbox(index)}
               style={{ cursor: 'pointer' }}
             >
@@ -156,7 +155,7 @@ export const Media: React.FC = () => {
       {lightboxIndex !== null && (
         <div 
           id="gallery-lightbox" 
-          className="lightbox-modal active" 
+          className={`${styles.lightboxModal} ${styles.active}`} 
           role="dialog"
           onClick={(e) => {
             if (e.target === e.currentTarget || (e.target as HTMLElement).classList.contains('lightbox-content')) {
@@ -164,8 +163,8 @@ export const Media: React.FC = () => {
             }
           }}
         >
-          <button className="lightbox-close" onClick={closeLightbox} aria-label="Close lightbox">&times;</button>
-          <button className="lightbox-prev" onClick={showPrev} aria-label="Previous image">&#10216;</button>
+          <button className={styles.lightboxClose} onClick={closeLightbox} aria-label="Close lightbox">&times;</button>
+          <button className={styles.lightboxPrev} onClick={showPrev} aria-label="Previous image">&#10216;</button>
           <div className="lightbox-content">
             <img 
               id="lightbox-img" 
@@ -182,7 +181,7 @@ export const Media: React.FC = () => {
               }} 
             />
           </div>
-          <button className="lightbox-next" onClick={showNext} aria-label="Next image">&#10217;</button>
+          <button className={styles.lightboxNext} onClick={showNext} aria-label="Next image">&#10217;</button>
         </div>
       )}
 

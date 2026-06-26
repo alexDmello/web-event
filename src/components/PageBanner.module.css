@@ -1,0 +1,110 @@
+.pageBanner {
+    padding: 120px 20px 60px;
+    background-color: var(--bg-cream-dark);
+    /* Subtle central radial glow */
+    background-image: radial-gradient(circle at center, rgba(197, 160, 89, 0.05) 0%, transparent 70%);
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    text-align: center;
+    border-bottom: 1px solid rgba(197, 160, 89, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+@media(min-width: 768px) {
+    .pageBanner {
+        padding: 170px 20px 90px;
+    }
+}
+
+/* Double gold outline border design framing page banners */
+.pageBanner::before {
+    content: '';
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    right: 25px;
+    bottom: 25px;
+    border: 1px solid rgba(197, 160, 89, 0.12);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.pageBanner::after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    /* Draw only elegant corner brackets */
+    background:
+        linear-gradient(to right, var(--color-gold) 2px, transparent 2px) 0 0,
+        linear-gradient(to bottom, var(--color-gold) 2px, transparent 2px) 0 0,
+        linear-gradient(to left, var(--color-gold) 2px, transparent 2px) 100% 0,
+        linear-gradient(to bottom, var(--color-gold) 2px, transparent 2px) 100% 0,
+        linear-gradient(to right, var(--color-gold) 2px, transparent 2px) 0 100%,
+        linear-gradient(to top, var(--color-gold) 2px, transparent 2px) 0 100%,
+        linear-gradient(to left, var(--color-gold) 2px, transparent 2px) 100% 100%,
+        linear-gradient(to top, var(--color-gold) 2px, transparent 2px) 100% 100%;
+    background-size: 15px 15px;
+    background-repeat: no-repeat;
+    opacity: 0.45;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.pageBanner h1 {
+    font-family: var(--font-serif);
+    font-size: 2.2rem;
+    color: var(--color-charcoal);
+    margin-bottom: 0px;
+    position: relative;
+    z-index: 2;
+    font-weight: 300;
+}
+
+@media(min-width: 768px) {
+    .pageBanner h1 {
+        font-size: 3.8rem;
+    }
+}
+
+/* Elegant gold line + diamond ornament separator */
+.pageBanner h1::after {
+    content: '';
+    display: block;
+    width: 100px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-gold) 35%, transparent 35%, transparent 65%, var(--color-gold) 65%, transparent);
+    margin: 20px auto;
+    position: relative;
+}
+
+/* The leaf sprig in the center of the gap */
+.pageBannerDiamond {
+    display: block;
+    width: 24px;
+    height: 24px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c5a059' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22 C12 17 12 14 12 10 M12 10 C14 8 16 7 18 7 C20 7 19 9 18 10 C16 11 14 11 12 12 M12 13 C10 11 8 10 6 10 C4 10 5 12 6 13 C8 14 10 14 12 15 M12 16 C13.5 15 15 14.5 16.5 14.5 C18 14.5 17.5 16 16.5 16.5 C15 17 13.5 17 12 17.5'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: -32px auto 10px;
+    position: relative;
+    z-index: 3;
+    opacity: 0.85;
+}
+
+.pageBanner p {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--color-gold-dark);
+    font-weight: 500;
+    position: relative;
+    z-index: 2;
+    margin: 0;
+}

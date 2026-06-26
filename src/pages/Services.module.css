@@ -1,0 +1,221 @@
+.servicesGridList {
+    max-width: 1200px;
+    margin: 80px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 60px;
+}
+
+@media(min-width: 768px) {
+    .servicesGridList {
+        grid-template-columns: 1fr 1fr;
+        gap: 50px 80px;
+    }
+}
+
+.serviceCardNew {
+    position: relative;
+    height: 480px;
+    border-radius: 16px;
+    overflow: hidden;
+    background-color: var(--bg-cream-dark);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(197, 160, 89, 0.15);
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.5s ease, box-shadow 0.5s ease;
+    cursor: pointer;
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    mask-image: radial-gradient(white, black);
+}
+
+.serviceCardNew:hover {
+    transform: translateY(-8px);
+    border-color: var(--color-gold);
+    box-shadow: 0 20px 40px rgba(197, 160, 89, 0.12);
+}
+
+.serviceImageContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Simple Frame Overlay */
+.serviceImageContainer::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 10px;
+    z-index: 2;
+    pointer-events: none;
+    transition: border-color 0.4s ease, transform 0.4s ease;
+}
+
+.serviceCardNew:hover .serviceImageContainer::after {
+    border-color: var(--color-gold);
+    transform: scale(1.02);
+}
+
+.serviceBgImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.serviceCardNew:hover .serviceBgImage {
+    transform: scale(1.06);
+}
+
+.serviceOverlayGradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(18, 16, 15, 0.85) 0%, rgba(18, 16, 15, 0.4) 50%, rgba(18, 16, 15, 0.1) 100%);
+    z-index: 1;
+}
+
+.serviceTitleWrapper {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 30px;
+    z-index: 2;
+    color: #ffffff;
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
+}
+
+.serviceTitleWrapper h3 {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    line-height: 1.3;
+    color: var(--color-gold-light);
+    margin: 0 0 10px 0;
+    font-weight: 300;
+}
+
+.serviceHoverIndicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.7);
+    transition: var(--transition-fast);
+}
+
+.serviceCardNew:hover .serviceHoverIndicator {
+    color: var(--color-gold);
+}
+
+.serviceHoverIndicator svg {
+    transition: transform 0.4s ease;
+}
+
+.serviceCardNew:hover .serviceHoverIndicator svg {
+    transform: rotate(180deg);
+}
+
+/* Slide up details dropdown menu panel on hover */
+.serviceHoverDetails {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(18, 16, 15, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 40px 30px;
+    z-index: 3;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transform: translateY(100%);
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.serviceCardNew:hover .serviceHoverDetails {
+    transform: translateY(0);
+}
+
+.serviceHoverDetails h4 {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    color: var(--color-gold-light);
+    margin-bottom: 25px;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid rgba(197, 160, 89, 0.25);
+    padding-bottom: 10px;
+}
+
+.serviceItemsListNew {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.serviceItemsListNew li {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    padding-left: 20px;
+    position: relative;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.serviceItemsListNew li::before {
+    content: '•';
+    color: var(--color-gold);
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+@media (max-width: 576px) {
+    .serviceCardNew {
+        height: 380px;
+        border-radius: 12px;
+    }
+    .serviceImageContainer::after {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        border-radius: 8px;
+    }
+    .serviceTitleWrapper h3 {
+        font-size: 1.4rem;
+    }
+    .serviceHoverDetails {
+        padding: 30px 20px;
+    }
+}
+
+.cateringDisclaimer {
+    max-width: 800px;
+    margin: 40px 20px 80px;
+    padding: 25px;
+    border-left: 2px solid var(--color-gold);
+    background-color: rgba(197, 160, 89, 0.04);
+    font-style: italic;
+    font-size: 0.95rem;
+}
+
+@media(min-width: 840px) {
+    .cateringDisclaimer {
+        margin: 40px auto 80px;
+    }
+}

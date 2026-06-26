@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { PageBanner } from '../components/PageBanner';
+import styles from './Enquire.module.css';
 
 export const Enquire: React.FC = () => {
   // Form submission state
@@ -109,38 +111,37 @@ export const Enquire: React.FC = () => {
   return (
     <div className="enquire-page-container">
       {/* PAGE BANNER */}
-      <section className="page-banner">
-        <h1>Enquire</h1>
-        <div className="page-banner-diamond"></div>
-        <p>Tell us about your celebration</p>
-      </section>
+      <PageBanner
+        title="Enquire"
+        description="Tell us about your celebration"
+      />
 
       {/* ENQUIRE WRAPPER */}
-      <section className="enquire-section-wrapper reveal-on-scroll">
-        <div className="enquire-split-layout">
+      <section className={`${styles.enquireSectionWrapper} reveal-on-scroll`}>
+        <div className={styles.enquireSplitLayout}>
 
           {/* Left Column: Contact details and links */}
-          <div className="enquire-contact-column">
-            <span className="enquire-sub-title">Contact & Socials</span>
-            <h2 className="enquire-main-title">Get in Touch</h2>
-            <p className="enquire-desc">
+          <div className={styles.enquireContactColumn}>
+            <span className={styles.enquireSubTitle}>Contact & Socials</span>
+            <h2 className={styles.enquireMainTitle}>Get in Touch</h2>
+            <p className={styles.enquireDesc}>
               To start planning your signature event, please complete our detailed planning questionnaire on the right. Alternatively, feel free to reach out directly via phone, email, or explore our curated profile listings.
             </p>
 
-            <div className="enquire-contact-details">
-              <div className="contact-detail-item">
-                <span className="detail-label">WhatsApp & Call</span>
-                <a href="https://wa.me/919148990266" target="_blank" rel="noopener noreferrer" className="detail-link">+91 91489 90266</a>
+            <div className={styles.enquireContactDetails}>
+              <div className={styles.contactDetailItem}>
+                <span className={styles.detailLabel}>WhatsApp & Call</span>
+                <a href="https://wa.me/919148990266" target="_blank" rel="noopener noreferrer" className={styles.detailLink}>+91 91489 90266</a>
               </div>
-              <div className="contact-detail-item">
-                <span className="detail-label">Email Inquiry</span>
-                <a href="mailto:thetaaffeiteevents@gmail.com" className="detail-link">thetaaffeiteevents@gmail.com</a>
+              <div className={styles.contactDetailItem}>
+                <span className={styles.detailLabel}>Email Inquiry</span>
+                <a href="mailto:thetaaffeiteevents@gmail.com" className={styles.detailLink}>thetaaffeiteevents@gmail.com</a>
               </div>
             </div>
 
-            <div className="enquire-social-list">
-              <span className="social-list-title">Explore Our Work</span>
-              <ul className="social-links-grid">
+            <div className={styles.enquireSocialList}>
+              <span className={styles.socialListTitle}>Explore Our Work</span>
+              <ul className={styles.socialLinksGrid}>
                 <li><a href="https://www.instagram.com/taaffeiteevents/?utm_source=chatgpt.com" target="_blank" rel="noopener noreferrer">Instagram</a></li>
                 <li><a href="https://www.wedmegood.com/profile/Taaffeite-Events-25042588?srsltid=AfmBOop_bgaeRe3LCx6eg9jacDSxhOKk-9glpzOU3wzwjiCIgl-829hI" target="_blank" rel="noopener noreferrer">WedMeGood</a></li>
                 <li><a href="https://www.linkedin.com/company/taaffeiteevents/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
@@ -151,11 +152,11 @@ export const Enquire: React.FC = () => {
           </div>
 
           {/* Right Column: Form or Success message */}
-          <div className="enquire-form-column">
+          <div className={styles.enquireFormColumn}>
             {!isSubmitted ? (
               <>
-                <span className="enquire-sub-title">Plan Your Celebration</span>
-                <h2 className="enquire-main-title">Planning Questionnaire</h2>
+                <span className={styles.enquireSubTitle}>Plan Your Celebration</span>
+                <h2 className={styles.enquireMainTitle}>Planning Questionnaire</h2>
 
                 {errorMessage && (
                   <div className="error-message" style={{
@@ -175,10 +176,10 @@ export const Enquire: React.FC = () => {
                   </div>
                 )}
 
-                <form className="luxury-form" id="enquire-form" onSubmit={handleSubmit}>
+                <form className={styles.luxuryForm} id="enquire-form" onSubmit={handleSubmit}>
                   {/* Row 1 */}
-                  <div className="form-row two-cols">
-                    <div className="form-group">
+                  <div className={`${styles.formRow} ${styles.twoCols}`}>
+                    <div className={styles.formGroup}>
                       <label htmlFor="client-name">Your Full Name *</label>
                       <input
                         type="text"
@@ -190,7 +191,7 @@ export const Enquire: React.FC = () => {
                         onChange={handleChange}
                       />
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                       <label htmlFor="client-email">Email Address *</label>
                       <input
                         type="email"
@@ -205,8 +206,8 @@ export const Enquire: React.FC = () => {
                   </div>
 
                   {/* Row 2 */}
-                  <div className="form-row two-cols">
-                    <div className="form-group">
+                  <div className={`${styles.formRow} ${styles.twoCols}`}>
+                    <div className={styles.formGroup}>
                       <label htmlFor="client-phone">Phone / WhatsApp Number *</label>
                       <div className="phone-input-wrapper" style={{
                         display: 'flex',
@@ -240,7 +241,7 @@ export const Enquire: React.FC = () => {
                         />
                       </div>
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                       <label htmlFor="event-date">Proposed Date *</label>
                       <input
                         type="date"
@@ -253,8 +254,8 @@ export const Enquire: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="form-row two-cols">
-                    <div className="form-group">
+                  <div className={`${styles.formRow} ${styles.twoCols}`}>
+                    <div className={styles.formGroup}>
                       <label htmlFor="event-type">Celebration Type *</label>
                       <select
                         id="event-type"
@@ -271,7 +272,7 @@ export const Enquire: React.FC = () => {
                         <option value="Other">Others</option>
                       </select>
                     </div>
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                       <label htmlFor="guest-count">Estimated Guest Count *</label>
                       <input
                         type="number"
@@ -287,8 +288,8 @@ export const Enquire: React.FC = () => {
                   </div>
 
                   {/* Row 4: Specify Celebration Type (Conditional) */}
-                  <div className={`conditional-form-row ${formData.celebrationType === 'Other' ? 'show' : ''}`}>
-                    <div className="form-group">
+                  <div className={`${styles.conditionalFormRow} ${formData.celebrationType === 'Other' ? styles.show : ''}`}>
+                    <div className={styles.formGroup}>
                       <label htmlFor="other-celebration-detail">Specify Celebration Type *</label>
                       <input
                         type="text"
@@ -303,8 +304,8 @@ export const Enquire: React.FC = () => {
                   </div>
 
                   {/* Row 4 */}
-                  <div className="form-row">
-                    <div className="form-group">
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
                       <label htmlFor="event-location">Proposed Location / City *</label>
                       <input
                         type="text"
@@ -319,8 +320,8 @@ export const Enquire: React.FC = () => {
                   </div>
 
                   {/* Submit Button */}
-                  <div className="form-submit-container">
-                    <button type="submit" className="btn-form-submit" disabled={isSubmitting}>
+                  <div className={styles.formSubmitContainer}>
+                    <button type="submit" className={styles.btnFormSubmit} disabled={isSubmitting}>
                       {isSubmitting ? 'Submitting Inquiry...' : 'Submit Inquiry'}
                     </button>
                   </div>
@@ -328,7 +329,7 @@ export const Enquire: React.FC = () => {
               </>
             ) : (
               /* Form Success Message */
-              <div className="form-success-message" id="form-success" style={{ display: 'block', opacity: 1 }}>
+              <div className={styles.formSuccessMessage} id="form-success">
                 <h3>Thank You, {formData.fullName}</h3>
                 <p>
                   Your inquiry for the <strong>{formData.celebrationType === 'Other' ? otherCelebrationDetail : formData.celebrationType}</strong> on <strong>{formData.proposedDate || 'your selected date'}</strong> has been received. Our planning directors will contact you within 24 hours.

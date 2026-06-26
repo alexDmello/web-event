@@ -1,0 +1,201 @@
+.mediaIntro {
+    padding: 80px 20px 40px;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.mediaIntro p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+.mediaMasonry {
+    max-width: 1200px;
+    margin: 0 auto 100px;
+    padding: 0 20px;
+    column-count: 1;
+    column-gap: 30px;
+}
+
+@media(min-width: 768px) {
+    .mediaMasonry {
+        column-count: 2;
+    }
+}
+
+@media(min-width: 992px) {
+    .mediaMasonry {
+        column-count: 3;
+    }
+}
+
+.mediaItem {
+    background-color: #fff;
+    margin-bottom: 30px;
+    break-inside: avoid;
+    border: 1px solid rgba(197, 160, 89, 0.08);
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+    transition: var(--transition-smooth);
+}
+
+.mediaItem:hover {
+    transform: scale(1.015);
+    box-shadow: 0 15px 45px rgba(197, 160, 89, 0.06);
+    border-color: rgba(197, 160, 89, 0.2);
+}
+
+.mediaItem img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.mediaCaption {
+    padding: 20px;
+}
+
+.mediaCaption span {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-gold-dark);
+    display: block;
+    margin-bottom: 8px;
+}
+
+.mediaCaption p {
+    font-size: 0.9rem;
+    color: var(--color-charcoal);
+    font-weight: 400;
+}
+
+/* Lightbox Modal */
+.lightboxModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(18, 16, 15, 0.98);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.lightboxModal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Protect the dynamically checked lightbox-content class name from hashing */
+:global(.lightbox-content) {
+    max-width: 90%;
+    max-height: 85vh;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(197, 160, 89, 0.1);
+}
+
+:global(.lightbox-content) img {
+    max-width: 100%;
+    max-height: 85vh;
+    object-fit: contain;
+    display: block;
+    border: 3px solid #ffffff;
+    background-color: #12100f;
+}
+
+.lightboxClose {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 45px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    z-index: 2010;
+}
+
+.lightboxClose:hover {
+    color: var(--color-gold);
+    transform: scale(1.1);
+}
+
+.lightboxPrev,
+.lightboxNext {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 24px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: var(--transition-fast);
+    z-index: 2010;
+}
+
+.lightboxPrev {
+    left: 40px;
+}
+
+.lightboxNext {
+    right: 40px;
+}
+
+.lightboxPrev:hover,
+.lightboxNext:hover {
+    background: var(--color-gold);
+    border-color: var(--color-gold);
+    color: var(--color-charcoal);
+}
+
+@media (max-width: 768px) {
+    .lightboxPrev {
+        left: 20px;
+    }
+    .lightboxNext {
+        right: 20px;
+    }
+    .lightboxClose {
+        right: 20px;
+        top: 20px;
+    }
+    .lightboxPrev,
+    .lightboxNext {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+    }
+}
+
+/* Pop-up Reveal Transition */
+@keyframes masonryPopUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
