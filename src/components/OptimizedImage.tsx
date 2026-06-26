@@ -34,7 +34,10 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (eager) return;
+    if (eager) {
+      setIsInView(true);
+      return;
+    }
 
     let observer: IntersectionObserver | null = null;
     const currentContainer = containerRef.current;
@@ -52,7 +55,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
           });
         },
         {
-          rootMargin: '400px 0px 400px 0px', // start loading 400px before scroll
+          rootMargin: '400px', // generous buffer zone to predictive load before entry
           threshold: 0.01
         }
       );
@@ -72,6 +75,17 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
 
   const computedAspectRatio = aspectRatio !== undefined ? aspectRatio : (width && height ? `${width} / ${height}` : undefined);
 
+  // Premium transition style for non-eager images
+  const transitionStyle = eager
+    ? {}
+    : {
+        transition: 'opacity 0.4s ease-in-out, filter 0.4s ease-in-out, transform 0.4s ease-in-out',
+        willChange: 'opacity, filter, transform',
+        opacity: isLoaded ? (style.opacity !== undefined ? style.opacity : 1) : 0,
+        filter: isLoaded ? 'none' : 'blur(8px)',
+        transform: isLoaded ? 'scale(1)' : 'scale(1.02)'
+      };
+
   return (
     <div
       ref={containerRef}
@@ -80,7 +94,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
         position: 'relative',
         width: '100%',
         aspectRatio: computedAspectRatio === 'unset' ? undefined : computedAspectRatio,
-        backgroundColor: '#e5dfd5', // elegant placeholder color matching brand
+        backgroundColor: '#e5dfd5', // elegant luxury brand cream placeholder color
         overflow: 'hidden',
         ...containerStyle
       }}
@@ -103,9 +117,8 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
             width: '100%',
             height: '100%',
             objectFit,
-            transition: eager ? 'none' : 'opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1)',
-            ...style,
-            opacity: eager ? (style.opacity !== undefined ? style.opacity : 1) : (isLoaded ? (style.opacity !== undefined ? style.opacity : 1) : 0)
+            ...transitionStyle,
+            ...style
           }}
         />
       )}
