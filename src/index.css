@@ -2053,20 +2053,4 @@ body.menu-open .menu-drawer {
         width: 100%;
     }
     
-    /* Enable GPU-accelerated native CSS scroll snapping for the Home page */
-    html.snap-scroll-enabled {
-        scroll-snap-type: y mandatory;
-        scroll-behavior: smooth;
-    }
-
-    html.snap-scroll-enabled .hero-wrapper,
-    html.snap-scroll-enabled .why-taaffeite-section,
-    html.snap-scroll-enabled .about-snap-trigger,
-    html.snap-scroll-enabled .glimpse-section,
-    html.snap-scroll-enabled .cta-section,
-    html.snap-scroll-enabled .quick-enquiry-section,
-    html.snap-scroll-enabled footer {
-        scroll-snap-align: start;
-        scroll-snap-stop: always;
-    }
 }

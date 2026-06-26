@@ -190,11 +190,153 @@ export const Home: React.FC = () => {
 
 
 
-  // Enable native GPU-accelerated CSS scroll snapping only on the Home page
+  const sectionOffsetsRef = useRef<number[]>([]);
+  const currentSectionIndex = useRef(0);
+
+  // High-performance smooth scroll snapper — zero layout reflows during scroll
   useEffect(() => {
-    document.documentElement.classList.add('snap-scroll-enabled');
+    let isAnimating = false;
+
+    const recalculateOffsets = () => {
+      const selectors = [
+        '.hero-wrapper',
+        '.why-taaffeite-section',
+        '#about-showcase', // Slide 1
+        '#about-showcase', // Slide 2
+        '#about-showcase', // Slide 3
+        '.glimpse-section',
+        '.cta-section',
+        '.quick-enquiry-section',
+        'footer'
+      ];
+      
+      const offsets: number[] = [];
+      const windowHeight = window.innerHeight;
+      
+      selectors.forEach((sel, i) => {
+        const el = document.querySelector(sel);
+        if (!el) {
+          offsets.push(0);
+          return;
+        }
+        // getBoundingClientRect().top + scrollY gives absolute document top position
+        const top = el.getBoundingClientRect().top + window.scrollY;
+        
+        if (sel === '#about-showcase') {
+          if (i === 2) offsets.push(Math.round(top));
+          if (i === 3) offsets.push(Math.round(top + windowHeight));
+          if (i === 4) offsets.push(Math.round(top + 2 * windowHeight));
+        } else if (sel === 'footer') {
+          offsets.push(Math.round(document.documentElement.scrollHeight - windowHeight));
+        } else {
+          offsets.push(Math.round(top));
+        }
+      });
+      sectionOffsetsRef.current = offsets;
+    };
+
+    const smoothScrollTo = (targetY: number, duration = 1400) => {
+      isAnimating = true;
+      const startY = window.scrollY;
+      const change = targetY - startY;
+      let startTime: number | null = null;
+      
+      const animate = (currentTime: number) => {
+        if (startTime === null) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const progress = Math.min(timeElapsed / duration, 1);
+        
+        // Premium ultra-smooth easeInOutCubic curve
+        const easeInOutCubic = (t: number) => t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+        const easeValue = easeInOutCubic(progress);
+        
+        window.scrollTo(0, startY + change * easeValue);
+        
+        if (timeElapsed < duration) {
+          requestAnimationFrame(animate);
+        } else {
+          window.scrollTo(0, targetY);
+          setTimeout(() => {
+            isAnimating = false;
+          }, 350); // cooldown for trackpad scroll momentum tails
+        }
+      };
+      
+      requestAnimationFrame(animate);
+    };
+
+    const handleWheel = (e: WheelEvent) => {
+      if (window.innerWidth < 992) return;
+      
+      // Stop browser default jumpy scroll
+      e.preventDefault();
+      if (isAnimating) return;
+      if (Math.abs(e.deltaY) < 12) return; // filter out accidental touch-tap triggers
+
+      const direction = e.deltaY > 0 ? 1 : -1;
+      const maxIndex = sectionOffsetsRef.current.length - 1;
+      const nextIndex = Math.min(maxIndex, Math.max(0, currentSectionIndex.current + direction));
+      
+      if (nextIndex !== currentSectionIndex.current) {
+        currentSectionIndex.current = nextIndex;
+        smoothScrollTo(sectionOffsetsRef.current[nextIndex], 1400);
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (window.innerWidth < 992) return;
+      if (isAnimating) return;
+      
+      let direction = 0;
+      if (e.key === 'ArrowDown' || e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey)) {
+        direction = 1;
+      } else if (e.key === 'ArrowUp' || e.key === 'PageUp' || (e.key === ' ' && e.shiftKey)) {
+        direction = -1;
+      }
+      
+      if (direction !== 0) {
+        e.preventDefault();
+        const maxIndex = sectionOffsetsRef.current.length - 1;
+        const nextIndex = Math.min(maxIndex, Math.max(0, currentSectionIndex.current + direction));
+        if (nextIndex !== currentSectionIndex.current) {
+          currentSectionIndex.current = nextIndex;
+          smoothScrollTo(sectionOffsetsRef.current[nextIndex], 1400);
+        }
+      }
+    };
+
+    const handleScrollSync = () => {
+      if (window.innerWidth < 992 || isAnimating) return;
+      
+      const currentScrollY = window.scrollY;
+      let closestIndex = 0;
+      let minDiff = Infinity;
+      const offsets = sectionOffsetsRef.current;
+      
+      for (let i = 0; i < offsets.length; i++) {
+        const diff = Math.abs(currentScrollY - offsets[i]);
+        if (diff < minDiff) {
+          minDiff = diff;
+          closestIndex = i;
+        }
+      }
+      currentSectionIndex.current = closestIndex;
+    };
+
+    // Calculate initial positions once mounted and on resize
+    recalculateOffsets();
+    window.addEventListener('resize', recalculateOffsets);
+    
+    // Add scroll snapping listeners (using passive: false to allow e.preventDefault() on scroll animation trigger)
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('scroll', handleScrollSync, { passive: true });
+
     return () => {
-      document.documentElement.classList.remove('snap-scroll-enabled');
+      window.removeEventListener('resize', recalculateOffsets);
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('scroll', handleScrollSync);
     };
   }, []);
 
