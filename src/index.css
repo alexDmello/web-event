@@ -2053,4 +2053,9 @@ body.menu-open .menu-drawer {
         width: 100%;
     }
     
+    /* Disable html scroll snapping as we use custom JS section snapping */
+    html {
+        scroll-snap-type: none !important;
+        scroll-behavior: auto !important;
+    }
 }

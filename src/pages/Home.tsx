@@ -190,52 +190,50 @@ export const Home: React.FC = () => {
 
 
 
-  const sectionOffsetsRef = useRef<number[]>([]);
-  const currentSectionIndex = useRef(0);
-
-  // High-performance smooth scroll snapper — zero layout reflows during scroll
+  // Custom Desktop Section Scroll Snapping Controller
   useEffect(() => {
     let isAnimating = false;
+    const currentSectionIndex = { current: 0 };
 
-    const recalculateOffsets = () => {
-      const selectors = [
-        '.hero-wrapper',
-        '.why-taaffeite-section',
-        '#about-showcase', // Slide 1
-        '#about-showcase', // Slide 2
-        '#about-showcase', // Slide 3
-        '.glimpse-section',
-        '.cta-section',
-        '.quick-enquiry-section',
-        'footer'
+    const getTargetScrollPos = (index: number) => {
+      const sections = [
+        () => 0, // Hero
+        () => {
+          const el = document.querySelector('.why-taaffeite-section');
+          return el ? el.getBoundingClientRect().top + window.scrollY : 0;
+        },
+        () => {
+          const el = document.querySelector('.about-showcase-container');
+          return el ? el.getBoundingClientRect().top + window.scrollY : 0;
+        },
+        () => {
+          const el = document.querySelector('.about-showcase-container');
+          return el ? el.getBoundingClientRect().top + window.scrollY + window.innerHeight : 0;
+        },
+        () => {
+          const el = document.querySelector('.about-showcase-container');
+          return el ? el.getBoundingClientRect().top + window.scrollY + 2 * window.innerHeight : 0;
+        },
+        () => {
+          const el = document.querySelector('.glimpse-section');
+          return el ? el.getBoundingClientRect().top + window.scrollY : 0;
+        },
+        () => {
+          const el = document.querySelector('.cta-section');
+          return el ? el.getBoundingClientRect().top + window.scrollY : 0;
+        },
+        () => {
+          const el = document.querySelector('.quick-enquiry-section');
+          return el ? el.getBoundingClientRect().top + window.scrollY : 0;
+        },
+        () => document.documentElement.scrollHeight - window.innerHeight // Footer
       ];
       
-      const offsets: number[] = [];
-      const windowHeight = window.innerHeight;
-      
-      selectors.forEach((sel, i) => {
-        const el = document.querySelector(sel);
-        if (!el) {
-          offsets.push(0);
-          return;
-        }
-        // getBoundingClientRect().top + scrollY gives absolute document top position
-        const top = el.getBoundingClientRect().top + window.scrollY;
-        
-        if (sel === '#about-showcase') {
-          if (i === 2) offsets.push(Math.round(top));
-          if (i === 3) offsets.push(Math.round(top + windowHeight));
-          if (i === 4) offsets.push(Math.round(top + 2 * windowHeight));
-        } else if (sel === 'footer') {
-          offsets.push(Math.round(document.documentElement.scrollHeight - windowHeight));
-        } else {
-          offsets.push(Math.round(top));
-        }
-      });
-      sectionOffsetsRef.current = offsets;
+      if (index < 0 || index >= sections.length) return 0;
+      return Math.round(sections[index]());
     };
 
-    const smoothScrollTo = (targetY: number, duration = 1400) => {
+    const smoothScrollTo = (targetY: number, duration = 1200) => {
       isAnimating = true;
       const startY = window.scrollY;
       const change = targetY - startY;
@@ -246,7 +244,7 @@ export const Home: React.FC = () => {
         const timeElapsed = currentTime - startTime;
         const progress = Math.min(timeElapsed / duration, 1);
         
-        // Premium ultra-smooth easeInOutCubic curve
+        // easeInOutCubic curve
         const easeInOutCubic = (t: number) => t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
         const easeValue = easeInOutCubic(progress);
         
@@ -258,28 +256,32 @@ export const Home: React.FC = () => {
           window.scrollTo(0, targetY);
           setTimeout(() => {
             isAnimating = false;
-          }, 350); // cooldown for trackpad scroll momentum tails
+          }, 350); // Cooldown to discard trackpad scrolling momentum tail
         }
       };
       
       requestAnimationFrame(animate);
     };
 
+    const maxIndex = 8;
+
     const handleWheel = (e: WheelEvent) => {
       if (window.innerWidth < 992) return;
       
-      // Stop browser default jumpy scroll
+      // Always prevent default scroll behavior on desktop to lock scrolling to our controller
       e.preventDefault();
+
       if (isAnimating) return;
-      if (Math.abs(e.deltaY) < 12) return; // filter out accidental touch-tap triggers
+
+      // Filter out small accidental scrolls
+      if (Math.abs(e.deltaY) < 10) return;
 
       const direction = e.deltaY > 0 ? 1 : -1;
-      const maxIndex = sectionOffsetsRef.current.length - 1;
-      const nextIndex = Math.min(maxIndex, Math.max(0, currentSectionIndex.current + direction));
+      const newIndex = Math.min(maxIndex, Math.max(0, currentSectionIndex.current + direction));
       
-      if (nextIndex !== currentSectionIndex.current) {
-        currentSectionIndex.current = nextIndex;
-        smoothScrollTo(sectionOffsetsRef.current[nextIndex], 1400);
+      if (newIndex !== currentSectionIndex.current) {
+        currentSectionIndex.current = newIndex;
+        smoothScrollTo(getTargetScrollPos(newIndex), 1200);
       }
     };
 
@@ -296,25 +298,25 @@ export const Home: React.FC = () => {
       
       if (direction !== 0) {
         e.preventDefault();
-        const maxIndex = sectionOffsetsRef.current.length - 1;
-        const nextIndex = Math.min(maxIndex, Math.max(0, currentSectionIndex.current + direction));
-        if (nextIndex !== currentSectionIndex.current) {
-          currentSectionIndex.current = nextIndex;
-          smoothScrollTo(sectionOffsetsRef.current[nextIndex], 1400);
+        const newIndex = Math.min(maxIndex, Math.max(0, currentSectionIndex.current + direction));
+        if (newIndex !== currentSectionIndex.current) {
+          currentSectionIndex.current = newIndex;
+          smoothScrollTo(getTargetScrollPos(newIndex), 1200);
         }
       }
     };
 
+    // Synchronize current index if user uses scrollbar directly
     const handleScrollSync = () => {
       if (window.innerWidth < 992 || isAnimating) return;
       
       const currentScrollY = window.scrollY;
       let closestIndex = 0;
       let minDiff = Infinity;
-      const offsets = sectionOffsetsRef.current;
       
-      for (let i = 0; i < offsets.length; i++) {
-        const diff = Math.abs(currentScrollY - offsets[i]);
+      for (let i = 0; i <= maxIndex; i++) {
+        const target = getTargetScrollPos(i);
+        const diff = Math.abs(currentScrollY - target);
         if (diff < minDiff) {
           minDiff = diff;
           closestIndex = i;
@@ -323,17 +325,12 @@ export const Home: React.FC = () => {
       currentSectionIndex.current = closestIndex;
     };
 
-    // Calculate initial positions once mounted and on resize
-    recalculateOffsets();
-    window.addEventListener('resize', recalculateOffsets);
-    
-    // Add scroll snapping listeners (using passive: false to allow e.preventDefault() on scroll animation trigger)
+    // Register listeners
     window.addEventListener('wheel', handleWheel, { passive: false });
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('scroll', handleScrollSync, { passive: true });
 
     return () => {
-      window.removeEventListener('resize', recalculateOffsets);
       window.removeEventListener('wheel', handleWheel);
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('scroll', handleScrollSync);
@@ -501,11 +498,6 @@ export const Home: React.FC = () => {
 
       {/* 2. SCROLL-LINKED ABOUT SECTION (3 PARTS) */}
       <div className="about-showcase-container" id="about-showcase" ref={aboutShowcaseRef}>
-        {/* Invisible anchors to trigger native CSS scroll snapping for the sticky slides */}
-        <div className="about-snap-trigger" style={{ position: 'absolute', top: 0, height: '100vh', width: '1px', pointerEvents: 'none' }} />
-        <div className="about-snap-trigger" style={{ position: 'absolute', top: '100vh', height: '100vh', width: '1px', pointerEvents: 'none' }} />
-        <div className="about-snap-trigger" style={{ position: 'absolute', top: '200vh', height: '100vh', width: '1px', pointerEvents: 'none' }} />
-        
         <div className="about-showcase-sticky">
 
           {/* Slide 1 — initial: active (visible on load) */}
