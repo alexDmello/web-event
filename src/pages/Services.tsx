@@ -131,6 +131,7 @@ export const Services: React.FC = () => {
                   className="service-bg-image"
                   imgClassName={styles.serviceBgImage}
                   containerStyle={{ height: '100%', width: '100%' }}
+                  eager={true}
                   aspectRatio="unset"
                 />
                 <div className={styles.serviceOverlayGradient}></div>

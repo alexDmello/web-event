@@ -145,6 +145,7 @@ export const Media: React.FC = () => {
                 alt={photo.alt}
                 width={photo.width}
                 height={photo.height}
+                eager={true}
               />
             </div>
           ))}

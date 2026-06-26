@@ -432,7 +432,7 @@ export const Home: React.FC = () => {
                 height={img.height}
                 alt={`Luxury Celebration ${idx + 1}`}
                 className={`hero-slide-img ${idx === heroImageIndex ? 'active' : ''}`}
-                eager={idx === 0}
+                eager={true}
                 containerStyle={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
                 aspectRatio="unset"
               />
@@ -538,6 +538,7 @@ export const Home: React.FC = () => {
                   className="about-showcase-image"
                   width={2400}
                   height={3600}
+                  eager={true}
                   aspectRatio="unset"
                 />
               </div>
@@ -572,6 +573,7 @@ export const Home: React.FC = () => {
                   className="about-showcase-image"
                   width={4631}
                   height={6946}
+                  eager={true}
                   aspectRatio="unset"
                 />
               </div>
@@ -600,6 +602,7 @@ export const Home: React.FC = () => {
                   className="about-showcase-image"
                   width={3645}
                   height={5467}
+                  eager={true}
                   aspectRatio="unset"
                 />
               </div>
@@ -631,6 +634,7 @@ export const Home: React.FC = () => {
                     alt={img.alt}
                     width={img.width}
                     height={img.height}
+                    eager={true}
                     aspectRatio="unset"
                     containerStyle={{ width: '100%', height: '100%' }}
                   />
@@ -644,6 +648,7 @@ export const Home: React.FC = () => {
                     alt={img.alt}
                     width={img.width}
                     height={img.height}
+                    eager={true}
                     aspectRatio="unset"
                     containerStyle={{ width: '100%', height: '100%' }}
                   />

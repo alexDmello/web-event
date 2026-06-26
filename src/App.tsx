@@ -98,10 +98,123 @@ function App() {
     }
   }, [isMenuOpen]);
   // Dismiss global loader once React mounts to minimize FCP/LCP delay
+  // Dismiss global loader once React mounts after preloading above-the-fold hero images
   useEffect(() => {
-    if (typeof (window as any).dismissGlobalLoader === 'function') {
-      (window as any).dismissGlobalLoader();
-    }
+    // 1. Hero/LCP images to preload during loading screen
+    const heroImages = [
+      "/assets/images/logo.png",
+      "/assets/05 PHOTOS/Proposal/0039.webp",
+      "/assets/05 PHOTOS/Haldi-Mehandi/AKR03316.webp",
+      "/assets/05 PHOTOS/Reception/SBJR_Ritvika_2BKaushal_39266.webp",
+      "/assets/05 PHOTOS/Weddings/AKR07379.webp"
+    ];
+
+    // 2. Subpage images to prefetch in the background after home is shown
+    const subpageImages = [
+      '/assets/05 PHOTOS/Reception/SBJR_Ritvika_2BKaushal_44222.webp',
+      '/assets/05 PHOTOS/Reception/SBJR_Ritvika_26Kaushal_Story349.webp',
+      '/assets/05 PHOTOS/Weddings/Sanhita & Benny-13.webp',
+      '/assets/05 PHOTOS/Haldi-Mehandi/AKR02741.webp',
+      '/assets/05 PHOTOS/Proposal/0001.webp',
+      '/assets/05 PHOTOS/Weddings/AKR05567.webp',
+      '/assets/05 PHOTOS/Haldi-Mehandi/AKR02762.webp',
+      '/assets/05 PHOTOS/Proposal/0008.webp',
+      '/assets/05 PHOTOS/Reception/SBJR_Ritvika_26Kaushal_Story377_20copy.webp',
+      '/assets/05 PHOTOS/Weddings/Sanhita & Benny-27.webp',
+      '/assets/05 PHOTOS/Haldi-Mehandi/AKR02772.webp',
+      '/assets/05 PHOTOS/Proposal/0012.JPG',
+      '/assets/05 PHOTOS/Reception/SBJR_Ritvika_2BKaushal_39412.webp',
+      '/assets/05 PHOTOS/Haldi-Mehandi/AKR02776.webp',
+      '/assets/05 PHOTOS/Weddings/AKR07499.webp',
+      '/assets/05 PHOTOS/Haldi-Mehandi/AKR02778.webp',
+      '/assets/05 PHOTOS/Proposal/0041.webp',
+      '/assets/05 PHOTOS/Weddings/IMG_7087.webp',
+      '/assets/05 PHOTOS/Haldi-Mehandi/AKR03301.webp',
+      '/assets/05 PHOTOS/Proposal/0044.webp',
+      '/assets/05 PHOTOS/Reception/WEVA1312 2.webp',
+      '/assets/05 PHOTOS/Weddings/IMG_7093.webp',
+      '/assets/05 PHOTOS/Haldi-Mehandi/AKR03316.webp',
+      '/assets/05 PHOTOS/Proposal/ANS01113.webp',
+      '/assets/05 PHOTOS/Reception/WEVA1313 2.webp',
+      '/assets/05 PHOTOS/Weddings/IMG_7094.webp',
+      '/assets/05 PHOTOS/Haldi-Mehandi/AKR03432.webp',
+      '/assets/05 PHOTOS/Proposal/ANS01928.webp',
+      '/assets/05 PHOTOS/Weddings/IMG_7095.webp',
+      '/assets/05 PHOTOS/Haldi-Mehandi/AKR03875.webp',
+      '/assets/05 PHOTOS/Weddings/PRJ07750.webp',
+      '/assets/05 PHOTOS/Weddings/Sanhita & Benny-19 2.webp',
+      '/assets/05 PHOTOS/Weddings/Sanhita & Benny-21.webp',
+      '/assets/05 PHOTOS/Weddings/Sanhita & Benny-24.webp',
+      '/assets/05 PHOTOS/Weddings/Sanhita & Benny-317 2.webp',
+      '/assets/05 PHOTOS/Weddings/AKR05590.webp'
+    ];
+
+    let loadedCount = 0;
+    const totalToLoad = heroImages.length;
+    let minimumDelayPassed = false;
+    let heroImagesLoaded = false;
+
+    const tryDismissLoader = () => {
+      if (minimumDelayPassed && heroImagesLoaded) {
+        if (typeof (window as any).dismissGlobalLoader === 'function') {
+          (window as any).dismissGlobalLoader();
+        }
+        // Start prefetching secondary page images in the background after home is fully revealed
+        setTimeout(() => {
+          prefetchImages(subpageImages);
+        }, 3000);
+      }
+    };
+
+    // Preload critical hero images
+    heroImages.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+      img.onload = img.onerror = () => {
+        loadedCount++;
+        if (loadedCount >= totalToLoad) {
+          heroImagesLoaded = true;
+          tryDismissLoader();
+        }
+      };
+    });
+
+    // Enforce minimum delay of 2.8 seconds for a relaxed, premium visual entry
+    const delayTimer = setTimeout(() => {
+      minimumDelayPassed = true;
+      tryDismissLoader();
+    }, 2800);
+
+    // Safety fallback (6 seconds max) in case a connection drops/blocks
+    const safetyTimer = setTimeout(() => {
+      minimumDelayPassed = true;
+      heroImagesLoaded = true;
+      tryDismissLoader();
+    }, 6000);
+
+    // Incremental background prefetching queue
+    const prefetchImages = (urls: string[]) => {
+      let index = 0;
+      const loadNext = () => {
+        if (index >= urls.length) return;
+        const img = new Image();
+        img.src = urls[index];
+        index++;
+        // Load with a minor delay spacing to keep main thread completely fluid
+        setTimeout(loadNext, 100);
+      };
+
+      if (typeof (window as any).requestIdleCallback === 'function') {
+        (window as any).requestIdleCallback(() => loadNext());
+      } else {
+        setTimeout(loadNext, 1000);
+      }
+    };
+
+    return () => {
+      clearTimeout(delayTimer);
+      clearTimeout(safetyTimer);
+    };
   }, []);
   return (
     <Router>
