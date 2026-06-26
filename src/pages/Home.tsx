@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { OptimizedImage } from '../components/OptimizedImage';
 
@@ -69,19 +69,19 @@ const heroImages = [
 
 export const Home: React.FC = () => {
 
-
-  // 2. Hero Symmetrical Scroll-Linked Shrink Animation Progress
-  const [scrollProgress, setScrollProgress] = useState(0);
-
-  // 3. Hero Quotes Slider States
+  // Hero Quotes Slider State (discrete value - fine as state)
   const [activeQuote, setActiveQuote] = useState(0);
 
-  // 4. Scroll-Linked About Showcase state
-  const [aboutScrollVal, setAboutScrollVal] = useState<number>(0);
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 992);
-  const aboutShowcaseRef = useRef<HTMLDivElement>(null);
+  // Hero slideshow index (discrete, changes every 4s - fine as state)
+  const [heroImageIndex, setHeroImageIndex] = useState(0);
 
-  const activeAboutSlide = Math.min(2, Math.max(0, Math.round(aboutScrollVal)));
+  // Refs for direct DOM manipulation — avoids React re-renders on every scroll frame
+  const heroSectionRef = useRef<HTMLElement>(null);
+  const aboutShowcaseRef = useRef<HTMLDivElement>(null);
+  // Refs to the 3 about slide divs for direct class switching
+  const aboutSlideRefs = useRef<(HTMLDivElement | null)[]>([null, null, null]);
+  // Track last active slide index to avoid redundant DOM updates
+  const lastAboutSlideRef = useRef(-1);
 
 
 
@@ -337,84 +337,66 @@ export const Home: React.FC = () => {
     };
   }, []);
 
-  // Hero Section Symmetrical Shrink on Scroll
+  // Hero Section Symmetrical Shrink — direct DOM update, ZERO React re-renders
   useEffect(() => {
     const handleHeroScroll = () => {
-      const scrollY = window.scrollY;
-      const windowHeight = window.innerHeight;
-      const progress = Math.min(scrollY / windowHeight, 1);
-      setScrollProgress(progress);
+      const progress = Math.min(window.scrollY / window.innerHeight, 1);
+      if (heroSectionRef.current) {
+        heroSectionRef.current.style.transform = `scale(${1 - progress * 0.18})`;
+        heroSectionRef.current.style.borderRadius = `${progress * 40}px`;
+      }
     };
-
     window.addEventListener('scroll', handleHeroScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleHeroScroll);
-    };
+    return () => window.removeEventListener('scroll', handleHeroScroll);
   }, []);
 
   // Quotes Carousel Interval (4 seconds)
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveQuote(prev => (prev + 1) % quotes.length);
-    }, 4000);
+    const interval = setInterval(() => setActiveQuote(prev => (prev + 1) % quotes.length), 4000);
     return () => clearInterval(interval);
   }, []);
 
-  // Stacked About Showcase Scroll Link Logic
+  // Interval for Hero Background Slideshow (4 seconds)
+  useEffect(() => {
+    const interval = setInterval(() => setHeroImageIndex(prev => (prev + 1) % heroImages.length), 4000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // About Showcase Scroll Link — direct DOM class switching, ZERO React re-renders
+  const updateAboutSlides = useCallback((activeIndex: number) => {
+    if (lastAboutSlideRef.current === activeIndex) return; // skip if unchanged
+    lastAboutSlideRef.current = activeIndex;
+    aboutSlideRefs.current.forEach((el, i) => {
+      if (!el) return;
+      const cls = activeIndex === i ? 'active' : activeIndex > i ? 'past' : 'future';
+      el.className = `about-showcase-slide ${cls}`;
+    });
+  }, []);
+
   useEffect(() => {
     const handleAboutScroll = () => {
-      const desktop = window.innerWidth >= 992;
-      setIsDesktop(desktop);
-
-      if (!desktop) return;
-
-      if (aboutShowcaseRef.current) {
-        const rect = aboutShowcaseRef.current.getBoundingClientRect();
-        const containerHeight = rect.height;
-        const scrolledIntoContainer = -rect.top;
-        const totalScrollableHeight = containerHeight - window.innerHeight;
-
-        if (totalScrollableHeight <= 0) return;
-
-        const progress = Math.max(0, Math.min(scrolledIntoContainer / totalScrollableHeight, 1));
-        const scrollVal = progress * 2;
-        setAboutScrollVal(scrollVal);
+      if (window.innerWidth < 992) {
+        // On mobile: all slides visible — ensure active class on all
+        aboutSlideRefs.current.forEach(el => {
+          if (el) el.className = 'about-showcase-slide active';
+        });
+        return;
       }
+      if (!aboutShowcaseRef.current) return;
+      const rect = aboutShowcaseRef.current.getBoundingClientRect();
+      const totalScrollable = rect.height - window.innerHeight;
+      if (totalScrollable <= 0) return;
+      const progress = Math.max(0, Math.min(-rect.top / totalScrollable, 1));
+      updateAboutSlides(Math.min(2, Math.max(0, Math.round(progress * 2))));
     };
-
     window.addEventListener('scroll', handleAboutScroll, { passive: true });
     window.addEventListener('resize', handleAboutScroll);
-
-    // Trigger initially
     handleAboutScroll();
-
     return () => {
       window.removeEventListener('scroll', handleAboutScroll);
       window.removeEventListener('resize', handleAboutScroll);
     };
-  }, []);
-
-  // Note: Custom wheel-based scroll snapping listener has been removed to restore passive native scrolling and eliminate scroll-hijacking & thread blocking warnings.
-
-
-
-  const [heroImageIndex, setHeroImageIndex] = useState(0);
-
-  // Interval for Hero Background Slideshow (4 seconds)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setHeroImageIndex(prev => (prev + 1) % heroImages.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
-
-
-
-  const scale = 1 - scrollProgress * 0.18;
-  const heroStyle = {
-    transform: `scale(${scale})`,
-    borderRadius: `${scrollProgress * 40}px`
-  };
+  }, [updateAboutSlides]);
 
   return (
     <div className="home-page-container">
@@ -422,7 +404,7 @@ export const Home: React.FC = () => {
 
       {/* 1. HERO SECTION WRAPPER WITH SHRINK ANIMATION */}
       <div className="hero-wrapper">
-        <section className="hero-section" style={heroStyle}>
+        <section className="hero-section" ref={heroSectionRef}>
           <div className="hero-slideshow-container">
             {heroImages.map((img, idx) => (
               <OptimizedImage
@@ -518,11 +500,10 @@ export const Home: React.FC = () => {
       <div className="about-showcase-container" id="about-showcase" ref={aboutShowcaseRef}>
         <div className="about-showcase-sticky">
 
-          {/* Slide 1 */}
+          {/* Slide 1 — initial: active (visible on load) */}
           <div
-            className={`about-showcase-slide ${
-              !isDesktop ? 'active' : activeAboutSlide === 0 ? 'active' : 'past'
-            }`}
+            ref={el => { aboutSlideRefs.current[0] = el; }}
+            className="about-showcase-slide active"
             id="about-slide-0"
           >
             <div className="about-showcase-grid">
@@ -548,17 +529,10 @@ export const Home: React.FC = () => {
             </div>
           </div>
 
-          {/* Slide 2 */}
+          {/* Slide 2 — initial: future (below, awaiting scroll) */}
           <div
-            className={`about-showcase-slide ${
-              !isDesktop
-                ? 'active'
-                : activeAboutSlide === 1
-                ? 'active'
-                : activeAboutSlide > 1
-                ? 'past'
-                : 'future'
-            }`}
+            ref={el => { aboutSlideRefs.current[1] = el; }}
+            className="about-showcase-slide future"
             id="about-slide-1"
           >
             <div className="about-showcase-grid">
@@ -584,11 +558,10 @@ export const Home: React.FC = () => {
             </div>
           </div>
 
-          {/* Slide 3 */}
+          {/* Slide 3 — initial: future (below, awaiting scroll) */}
           <div
-            className={`about-showcase-slide ${
-              !isDesktop ? 'active' : activeAboutSlide === 2 ? 'active' : 'future'
-            }`}
+            ref={el => { aboutSlideRefs.current[2] = el; }}
+            className="about-showcase-slide future"
             id="about-slide-2"
           >
             <div className="about-showcase-grid">

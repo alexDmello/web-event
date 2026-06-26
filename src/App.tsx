@@ -11,6 +11,28 @@ const Services = React.lazy(() => import('./pages/Services').then(module => ({ d
 const Media = React.lazy(() => import('./pages/Media').then(module => ({ default: module.Media })));
 const Enquire = React.lazy(() => import('./pages/Enquire').then(module => ({ default: module.Enquire })));
 
+// Prefetch all route chunks during browser idle time so navigating between
+// pages has zero JS-fetch delay (eliminating the primary source of high INP
+// on navigation clicks: the 400-800ms chunk download + parse overhead).
+const prefetchRoutes = () => {
+  const routes = [
+    () => import('./pages/Services'),
+    () => import('./pages/Media'),
+    () => import('./pages/Enquire'),
+  ];
+  const loadNext = (index: number) => {
+    if (index >= routes.length) return;
+    routes[index]().finally(() => {
+      setTimeout(() => loadNext(index + 1), 200);
+    });
+  };
+  if ('requestIdleCallback' in window) {
+    (window as any).requestIdleCallback(() => loadNext(0), { timeout: 3000 });
+  } else {
+    setTimeout(() => loadNext(0), 2000);
+  }
+};
+
 // Scroll to top component on route changes
 const ScrollToTop: React.FC = () => {
   const { pathname } = useLocation();
@@ -98,16 +120,15 @@ function App() {
       document.body.classList.remove('menu-open');
     }
   }, [isMenuOpen]);
-  // Dismiss global loader once React mounts to minimize FCP/LCP delay
-  // Dismiss global loader once React mounts after preloading above-the-fold hero images
+  // Dismiss global loader once React mounts after preloading the LCP hero image
   useEffect(() => {
-    // 1. Hero/LCP images to preload during loading screen
+    // Prefetch all route JS chunks during idle time (eliminates INP on navigation)
+    prefetchRoutes();
+
+    // Only wait for the one image that IS the LCP — the first hero slide
     const heroImages = [
       "/assets/images/logo.webp",
       "/assets/05 PHOTOS/Proposal/0039.webp",
-      "/assets/05 PHOTOS/Haldi-Mehandi/AKR03316.webp",
-      "/assets/05 PHOTOS/Reception/SBJR_Ritvika_2BKaushal_39266.webp",
-      "/assets/05 PHOTOS/Weddings/AKR07379.webp"
     ];
 
     // 2. Subpage images to prefetch in the background after home is shown
@@ -180,11 +201,11 @@ function App() {
       };
     });
 
-    // Enforce minimum delay of 1.4 seconds for a relaxed, premium visual entry
+    // 800ms minimum: enough for the logo fade-in to complete on fast connections
     const delayTimer = setTimeout(() => {
       minimumDelayPassed = true;
       tryDismissLoader();
-    }, 1400);
+    }, 800);
 
     // Safety fallback (6 seconds max) in case a connection drops/blocks
     const safetyTimer = setTimeout(() => {
