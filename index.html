@@ -97,40 +97,27 @@
       var loader = document.getElementById('global-loader');
 
       function dismissLoader() {
+        if (!loader) return;
+        loader.classList.add('fade-out-content');
+
         setTimeout(function () {
           if (loader) {
-            loader.classList.add('fade-out-content');
+            loader.classList.add('slide-up');
           }
+          document.body.style.overflow = '';
 
+          // Clean up the DOM once the slide animation finishes
           setTimeout(function () {
-            if (loader) {
-              loader.classList.add('slide-up');
-            }
-            document.body.style.overflow = '';
-
-            // Clean up the DOM once the slide animation finishes
-            setTimeout(function () {
-              if (loader) loader.remove();
-            }, 1200);
-          }, 200);
-        }, 200);
+            if (loader) loader.remove();
+          }, 1200);
+        }, 300);
       }
 
-      if (document.readyState === 'complete') {
-        // Visual buffer of 600ms if page is already cached/complete
-        setTimeout(dismissLoader, 600);
-      } else {
-        var startTime = Date.now();
-        window.addEventListener('load', function () {
-          var elapsedTime = Date.now() - startTime;
-          var minDisplayTime = 600; // Total min visibility time (600ms)
-          var delay = Math.max(0, minDisplayTime - elapsedTime);
-          setTimeout(dismissLoader, delay);
-        });
+      // Expose globally so React App can trigger dismissal immediately on mount
+      window.dismissGlobalLoader = dismissLoader;
 
-        // Safety timeout (5s)
-        setTimeout(dismissLoader, 5000);
-      }
+      // Safety timeout fallback (3.5 seconds) in case React fails to mount
+      setTimeout(dismissLoader, 3500);
     })();
   </script>
 

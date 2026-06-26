@@ -95,7 +95,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
           fetchPriority={eager ? 'high' : 'auto'}
           decoding="async"
           onLoad={() => setIsLoaded(true)}
-          className={`optimized-img ${imgClassName} ${isLoaded ? 'loaded' : ''}`}
+          className={`optimized-img ${imgClassName} ${eager || isLoaded ? 'loaded' : ''}`}
           style={{
             position: 'absolute',
             top: 0,
@@ -103,9 +103,9 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
             width: '100%',
             height: '100%',
             objectFit,
-            transition: 'opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1)',
+            transition: eager ? 'none' : 'opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1)',
             ...style,
-            opacity: isLoaded ? (style.opacity !== undefined ? style.opacity : undefined) : 0
+            opacity: eager ? (style.opacity !== undefined ? style.opacity : 1) : (isLoaded ? (style.opacity !== undefined ? style.opacity : 1) : 0)
           }}
         />
       )}

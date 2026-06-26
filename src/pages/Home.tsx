@@ -2,6 +2,71 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { OptimizedImage } from '../components/OptimizedImage';
 
+// Static Configuration Arrays defined outside component to prevent re-creation on render
+const quotes = [
+  { text: "Because rare stories deserve rare celebrations.", author: "Brand Essence" },
+  { text: "Luxury isn't about doing more. It's about making things feel right.", author: "Our Philosophy" },
+  { text: "Honest, beautiful moments shared with the people who matter most.", author: "Our Mission" }
+];
+
+const marqueeImages = [
+  {
+    src: "/assets/05 PHOTOS/Weddings/AKR05567.webp",
+    alt: "Floral Mandap styling detail",
+    width: 2400,
+    height: 3600
+  },
+  {
+    src: "/assets/05 PHOTOS/Haldi-Mehandi/AKR02776.webp",
+    alt: "Luxury guest welcome hampers",
+    width: 2400,
+    height: 3600
+  },
+  {
+    src: "/assets/05 PHOTOS/Reception/WEVA1312 2.webp",
+    alt: "Luxury reception table setting detail",
+    width: 3651,
+    height: 5477
+  },
+  {
+    src: "/assets/05 PHOTOS/Weddings/AKR07499.webp",
+    alt: "Elegant wedding ceremony mandap",
+    width: 2400,
+    height: 3600
+  },
+  {
+    src: "/assets/05 PHOTOS/Haldi-Mehandi/AKR02772.webp",
+    alt: "Vibrant Haldi celebration setup",
+    width: 2400,
+    height: 3600
+  },
+  {
+    src: "/assets/05 PHOTOS/Weddings/AKR05590.webp",
+    alt: "Elegant wedding floral arch details",
+    width: 2400,
+    height: 3600
+  },
+  {
+    src: "/assets/05 PHOTOS/Reception/WEVA1313 2.webp",
+    alt: "Bespoke dinner banquet design",
+    width: 4000,
+    height: 2666
+  },
+  {
+    src: "/assets/05 PHOTOS/Haldi-Mehandi/AKR03432.webp",
+    alt: "Exotic floral canopy styling",
+    width: 2400,
+    height: 3600
+  }
+];
+
+const heroImages = [
+  { src: "/assets/05 PHOTOS/Proposal/0039.webp", width: 4671, height: 7006 },
+  { src: "/assets/05 PHOTOS/Haldi-Mehandi/AKR03316.webp", width: 3600, height: 2400 },
+  { src: "/assets/05 PHOTOS/Reception/SBJR_Ritvika_2BKaushal_39266.webp", width: 4608, height: 3072 },
+  { src: "/assets/05 PHOTOS/Weddings/AKR07379.webp", width: 3600, height: 2400 }
+];
+
 export const Home: React.FC = () => {
 
 
@@ -10,11 +75,6 @@ export const Home: React.FC = () => {
 
   // 3. Hero Quotes Slider States
   const [activeQuote, setActiveQuote] = useState(0);
-  const quotes = [
-    { text: "Because rare stories deserve rare celebrations.", author: "Brand Essence" },
-    { text: "Luxury isn't about doing more. It's about making things feel right.", author: "Our Philosophy" },
-    { text: "Honest, beautiful moments shared with the people who matter most.", author: "Our Mission" }
-  ];
 
   // 4. Scroll-Linked About Showcase state
   const [aboutScrollVal, setAboutScrollVal] = useState<number>(0);
@@ -338,64 +398,6 @@ export const Home: React.FC = () => {
 
 
 
-  const marqueeImages = [
-    {
-      src: "/assets/05 PHOTOS/Weddings/AKR05567.webp",
-      alt: "Floral Mandap styling detail",
-      width: 2400,
-      height: 3600
-    },
-    {
-      src: "/assets/05 PHOTOS/Haldi-Mehandi/AKR02776.webp",
-      alt: "Luxury guest welcome hampers",
-      width: 2400,
-      height: 3600
-    },
-    {
-      src: "/assets/05 PHOTOS/Reception/WEVA1312 2.webp",
-      alt: "Luxury reception table setting detail",
-      width: 3651,
-      height: 5477
-    },
-    {
-      src: "/assets/05 PHOTOS/Weddings/AKR07499.webp",
-      alt: "Elegant wedding ceremony mandap",
-      width: 2400,
-      height: 3600
-    },
-    {
-      src: "/assets/05 PHOTOS/Haldi-Mehandi/AKR02772.webp",
-      alt: "Vibrant Haldi celebration setup",
-      width: 2400,
-      height: 3600
-    },
-    {
-      src: "/assets/05 PHOTOS/Weddings/AKR05590.webp",
-      alt: "Elegant wedding floral arch details",
-      width: 2400,
-      height: 3600
-    },
-    {
-      src: "/assets/05 PHOTOS/Reception/WEVA1313 2.webp",
-      alt: "Bespoke dinner banquet design",
-      width: 4000,
-      height: 2666
-    },
-    {
-      src: "/assets/05 PHOTOS/Haldi-Mehandi/AKR03432.webp",
-      alt: "Exotic floral canopy styling",
-      width: 2400,
-      height: 3600
-    }
-  ];
-
-  // Hero Background Images Slideshow
-  const heroImages = [
-    { src: "/assets/05 PHOTOS/Proposal/0039.webp", width: 4671, height: 7006 },
-    { src: "/assets/05 PHOTOS/Haldi-Mehandi/AKR03316.webp", width: 3600, height: 2400 },
-    { src: "/assets/05 PHOTOS/Reception/SBJR_Ritvika_2BKaushal_39266.webp", width: 4608, height: 3072 },
-    { src: "/assets/05 PHOTOS/Weddings/AKR07379.webp", width: 3600, height: 2400 }
-  ];
   const [heroImageIndex, setHeroImageIndex] = useState(0);
 
   // Interval for Hero Background Slideshow (4 seconds)

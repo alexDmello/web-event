@@ -97,7 +97,12 @@ function App() {
       document.body.classList.remove('menu-open');
     }
   }, [isMenuOpen]);
-
+  // Dismiss global loader once React mounts to minimize FCP/LCP delay
+  useEffect(() => {
+    if (typeof (window as any).dismissGlobalLoader === 'function') {
+      (window as any).dismissGlobalLoader();
+    }
+  }, []);
   return (
     <Router>
       <ScrollToTop />
