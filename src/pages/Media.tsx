@@ -145,7 +145,7 @@ export const Media: React.FC = () => {
                 alt={photo.alt}
                 width={photo.width}
                 height={photo.height}
-                eager={false}
+                eager={true}
                 sizes="(max-width: 768px) 100vw, (max-width: 992px) 50vw, 33vw"
               />
             </div>

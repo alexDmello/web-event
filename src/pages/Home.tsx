@@ -414,7 +414,7 @@ export const Home: React.FC = () => {
                 height={img.height}
                 alt={`Luxury Celebration ${idx + 1}`}
                 className={`hero-slide-img ${idx === heroImageIndex ? 'active' : ''}`}
-                eager={idx === 0}
+                eager={true}
                 sizes="100vw"
                 containerStyle={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
                 aspectRatio="unset"
@@ -612,7 +612,7 @@ export const Home: React.FC = () => {
                     alt={img.alt}
                     width={img.width}
                     height={img.height}
-                    eager={false}
+                    eager={true}
                     sizes="(max-width: 768px) 85vw, 300px"
                     aspectRatio="unset"
                     containerStyle={{ width: '100%', height: '100%' }}
@@ -627,7 +627,7 @@ export const Home: React.FC = () => {
                     alt={img.alt}
                     width={img.width}
                     height={img.height}
-                    eager={false}
+                    eager={true}
                     sizes="(max-width: 768px) 85vw, 300px"
                     aspectRatio="unset"
                     containerStyle={{ width: '100%', height: '100%' }}
