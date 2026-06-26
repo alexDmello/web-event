@@ -576,7 +576,7 @@ export const Home: React.FC = () => {
                   className="about-showcase-image"
                   width={4631}
                   height={6946}
-                  eager={false}
+                  eager={true}
                   sizes="(max-width: 992px) 100vw, 50vw"
                   aspectRatio="unset"
                 />
@@ -606,7 +606,7 @@ export const Home: React.FC = () => {
                   className="about-showcase-image"
                   width={3645}
                   height={5467}
-                  eager={false}
+                  eager={true}
                   sizes="(max-width: 992px) 100vw, 50vw"
                   aspectRatio="unset"
                 />

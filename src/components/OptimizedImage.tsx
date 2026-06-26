@@ -60,7 +60,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
           });
         },
         {
-          rootMargin: '400px', // generous buffer zone to predictive load before entry
+          rootMargin: '1200px', // large buffer for snap-scroll: pre-fetches images 1-2 full sections ahead
           threshold: 0.01
         }
       );
