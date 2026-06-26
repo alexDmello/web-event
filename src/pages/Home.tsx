@@ -432,7 +432,8 @@ export const Home: React.FC = () => {
                 height={img.height}
                 alt={`Luxury Celebration ${idx + 1}`}
                 className={`hero-slide-img ${idx === heroImageIndex ? 'active' : ''}`}
-                eager={true}
+                eager={idx === 0}
+                sizes="100vw"
                 containerStyle={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
                 aspectRatio="unset"
               />
@@ -441,13 +442,14 @@ export const Home: React.FC = () => {
           <div className="hero-overlay"></div>
           <div className="hero-content">
             <OptimizedImage
-              src="/assets/images/logo.png"
+              src="/assets/images/logo.webp"
               alt="Taaffeite Events"
               className="hero-brand-logo"
               width={180}
               height={180}
               eager={true}
               objectFit="contain"
+              sizes="180px"
               containerStyle={{ width: '180px', height: '180px', marginTop: '-180px', marginBottom: '20px', backgroundColor: 'transparent' }}
             />
             <div className="hero-quotes-container">
@@ -539,6 +541,7 @@ export const Home: React.FC = () => {
                   width={2400}
                   height={3600}
                   eager={true}
+                  sizes="(max-width: 992px) 100vw, 50vw"
                   aspectRatio="unset"
                 />
               </div>
@@ -573,7 +576,8 @@ export const Home: React.FC = () => {
                   className="about-showcase-image"
                   width={4631}
                   height={6946}
-                  eager={true}
+                  eager={false}
+                  sizes="(max-width: 992px) 100vw, 50vw"
                   aspectRatio="unset"
                 />
               </div>
@@ -602,7 +606,8 @@ export const Home: React.FC = () => {
                   className="about-showcase-image"
                   width={3645}
                   height={5467}
-                  eager={true}
+                  eager={false}
+                  sizes="(max-width: 992px) 100vw, 50vw"
                   aspectRatio="unset"
                 />
               </div>
@@ -634,7 +639,8 @@ export const Home: React.FC = () => {
                     alt={img.alt}
                     width={img.width}
                     height={img.height}
-                    eager={true}
+                    eager={false}
+                    sizes="(max-width: 768px) 85vw, 300px"
                     aspectRatio="unset"
                     containerStyle={{ width: '100%', height: '100%' }}
                   />
@@ -648,7 +654,8 @@ export const Home: React.FC = () => {
                     alt={img.alt}
                     width={img.width}
                     height={img.height}
-                    eager={true}
+                    eager={false}
+                    sizes="(max-width: 768px) 85vw, 300px"
                     aspectRatio="unset"
                     containerStyle={{ width: '100%', height: '100%' }}
                   />

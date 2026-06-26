@@ -13,6 +13,10 @@ interface OptimizedImageProps {
   containerStyle?: React.CSSProperties;
   style?: React.CSSProperties;
   aspectRatio?: string;
+  /** Correct responsive sizes hint for the browser's resource picker. Prevents
+   *  the browser defaulting to 100vw for every image, which causes it to fetch
+   *  unnecessarily large files. Example: "(max-width: 768px) 100vw, 50vw" */
+  sizes?: string;
 }
 
 export const OptimizedImage: React.FC<OptimizedImageProps> = ({
@@ -27,7 +31,8 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   objectFit = 'cover',
   containerStyle = {},
   style = {},
-  aspectRatio
+  aspectRatio,
+  sizes
 }) => {
   const [isInView, setIsInView] = useState(eager);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -105,6 +110,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
           alt={alt}
           width={width}
           height={height}
+          sizes={sizes}
           loading={eager ? 'eager' : 'lazy'}
           fetchPriority={eager ? 'high' : 'auto'}
           decoding="async"

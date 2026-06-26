@@ -9,7 +9,7 @@ export const Footer: React.FC = () => {
         {/* Brand description */}
         <div className="footer-brand">
           <OptimizedImage
-            src="/assets/images/logo.png"
+            src="/assets/images/logo.webp"
             alt="Taaffeite Events Logo"
             className="footer-logo"
             width={80}

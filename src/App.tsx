@@ -102,7 +102,7 @@ function App() {
   useEffect(() => {
     // 1. Hero/LCP images to preload during loading screen
     const heroImages = [
-      "/assets/images/logo.png",
+      "/assets/images/logo.webp",
       "/assets/05 PHOTOS/Proposal/0039.webp",
       "/assets/05 PHOTOS/Haldi-Mehandi/AKR03316.webp",
       "/assets/05 PHOTOS/Reception/SBJR_Ritvika_2BKaushal_39266.webp",
@@ -122,7 +122,7 @@ function App() {
       '/assets/05 PHOTOS/Reception/SBJR_Ritvika_26Kaushal_Story377_20copy.webp',
       '/assets/05 PHOTOS/Weddings/Sanhita & Benny-27.webp',
       '/assets/05 PHOTOS/Haldi-Mehandi/AKR02772.webp',
-      '/assets/05 PHOTOS/Proposal/0012.JPG',
+      '/assets/05 PHOTOS/Proposal/0012.webp',
       '/assets/05 PHOTOS/Reception/SBJR_Ritvika_2BKaushal_39412.webp',
       '/assets/05 PHOTOS/Haldi-Mehandi/AKR02776.webp',
       '/assets/05 PHOTOS/Weddings/AKR07499.webp',
@@ -179,11 +179,11 @@ function App() {
       };
     });
 
-    // Enforce minimum delay of 2.8 seconds for a relaxed, premium visual entry
+    // Enforce minimum delay of 1.4 seconds for a relaxed, premium visual entry
     const delayTimer = setTimeout(() => {
       minimumDelayPassed = true;
       tryDismissLoader();
-    }, 2800);
+    }, 1400);
 
     // Safety fallback (6 seconds max) in case a connection drops/blocks
     const safetyTimer = setTimeout(() => {
