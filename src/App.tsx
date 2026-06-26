@@ -3,6 +3,7 @@ import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-d
 import { Header } from './components/Header';
 import { MenuDrawer } from './components/MenuDrawer';
 import { Footer } from './components/Footer';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 // Lazy load pages for performance optimization (code splitting)
 const Home = React.lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
@@ -101,6 +102,7 @@ function App() {
     <Router>
       <ScrollToTop />
       <ScrollRevealTrigger />
+      <SpeedInsights />
       <div className="app-container">
         <Header isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
         <MenuDrawer isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
