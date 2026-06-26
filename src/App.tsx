@@ -5,8 +5,9 @@ import { MenuDrawer } from './components/MenuDrawer';
 import { Footer } from './components/Footer';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 
-// Lazy load pages for performance optimization (code splitting)
-const Home = React.lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
+import { Home } from './pages/Home'; // Static import for initial route to reduce FCP/LCP network roundtrips
+
+// Lazy load secondary pages for performance optimization (code splitting)
 const Services = React.lazy(() => import('./pages/Services').then(module => ({ default: module.Services })));
 const Media = React.lazy(() => import('./pages/Media').then(module => ({ default: module.Media })));
 const Enquire = React.lazy(() => import('./pages/Enquire').then(module => ({ default: module.Enquire })));
@@ -97,6 +98,13 @@ function App() {
       document.body.classList.remove('menu-open');
     }
   }, [isMenuOpen]);
+
+  // Dismiss global loader once React mounts to minimize FCP/LCP delay
+  useEffect(() => {
+    if (typeof (window as any).dismissGlobalLoader === 'function') {
+      (window as any).dismissGlobalLoader();
+    }
+  }, []);
 
   return (
     <Router>
