@@ -1735,8 +1735,8 @@ body.menu-open .menu-drawer {
 
 .reveal-on-scroll {
     opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
 }
 
 .reveal-on-scroll.active {
@@ -1963,13 +1963,13 @@ body.menu-open .menu-drawer {
 /* Media Page Masonry Items Pop-up Reveal Transition */
 .media-masonry .media-item.reveal-on-scroll {
     opacity: 0;
-    transform: translateY(60px) scale(0.92);
-    transition: opacity 1s cubic-bezier(0.34, 1.56, 0.64, 1), transform 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform: translateY(30px);
+    transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .media-masonry .media-item.reveal-on-scroll.active {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
 }
 
 /* Visual stability for conditional form rows to prevent layout shift (CLS) */

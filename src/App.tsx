@@ -45,8 +45,9 @@ const ScrollRevealTrigger: React.FC = () => {
             }
           });
         }, {
-          threshold: 0.15,
-          rootMargin: '0px 0px -50px 0px'
+          threshold: 0.01,
+          // Fire as soon as 1% of the element is in view — no delay before panels appear
+          rootMargin: '100px 0px 0px 0px'
         });
 
         revealElements.forEach(el => {

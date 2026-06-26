@@ -34,66 +34,47 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   aspectRatio,
   sizes
 }) => {
-  const [isInView, setIsInView] = useState(eager);
   const [isLoaded, setIsLoaded] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
 
+  // Handle the case where the image is already cached by the browser —
+  // in that case `onLoad` never fires, so we check `complete` on mount.
   useEffect(() => {
-    if (eager) {
-      setIsInView(true);
-      return;
+    if (imgRef.current?.complete) {
+      setIsLoaded(true);
     }
-
-    let observer: IntersectionObserver | null = null;
-    const currentContainer = containerRef.current;
-
-    if (currentContainer && 'IntersectionObserver' in window) {
-      observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              setIsInView(true);
-              if (observer) {
-                observer.unobserve(entry.target);
-              }
-            }
-          });
-        },
-        {
-          rootMargin: '1200px', // large buffer for snap-scroll: pre-fetches images 1-2 full sections ahead
-          threshold: 0.01
-        }
-      );
-
-      observer.observe(currentContainer);
-    } else {
-      // Fallback for browsers that don't support IntersectionObserver
-      setIsInView(true);
-    }
-
-    return () => {
-      if (observer && currentContainer) {
-        observer.unobserve(currentContainer);
-      }
-    };
-  }, [eager]);
+  }, [src]);
 
   const computedAspectRatio = aspectRatio !== undefined ? aspectRatio : (width && height ? `${width} / ${height}` : undefined);
 
-  // Premium transition style for non-eager images
-  const transitionStyle = eager
-    ? {}
+  // Eager images are always immediately visible (no fade).
+  // Lazy images fade in once the browser has decoded them.
+  const imgStyle: React.CSSProperties = eager
+    ? {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        objectFit,
+        ...style
+      }
     : {
-        transition: 'opacity 0.4s ease-in-out, filter 0.4s ease-in-out, transform 0.4s ease-in-out',
-        willChange: 'opacity, filter, transform',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        objectFit,
+        // Start invisible, fade in smoothly once decoded — no jarring pop-in
         opacity: isLoaded ? (style.opacity !== undefined ? style.opacity : 1) : 0,
-        filter: isLoaded ? 'none' : 'blur(8px)',
-        transform: isLoaded ? 'scale(1)' : 'scale(1.02)'
+        transition: 'opacity 0.5s ease-in-out',
+        willChange: 'opacity',
+        ...style
       };
 
   return (
     <div
-      ref={containerRef}
       className={`optimized-image-container ${className} ${containerClassName}`}
       style={{
         position: 'relative',
@@ -104,30 +85,29 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
         ...containerStyle
       }}
     >
-      {isInView && (
-        <img
-          src={src}
-          alt={alt}
-          width={width}
-          height={height}
-          sizes={sizes}
-          loading={eager ? 'eager' : 'lazy'}
-          fetchPriority={eager ? 'high' : 'auto'}
-          decoding="async"
-          onLoad={() => setIsLoaded(true)}
-          className={`optimized-img ${imgClassName} ${eager || isLoaded ? 'loaded' : ''}`}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            objectFit,
-            ...transitionStyle,
-            ...style
-          }}
-        />
-      )}
+      {/*
+       * The <img> is ALWAYS in the DOM — never conditionally removed.
+       * We rely entirely on the browser's native loading="lazy" which:
+       *   - uses a smarter algorithm than any JS IntersectionObserver
+       *   - starts pre-fetching based on scroll velocity predictions
+       *   - never evicts already-fetched images from its internal queue
+       *   - works correctly across all scroll types (snap, smooth, touch)
+       * Our JS only controls the CSS fade-in reveal (opacity), not the fetch.
+       */}
+      <img
+        ref={imgRef}
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        sizes={sizes}
+        loading={eager ? 'eager' : 'lazy'}
+        fetchPriority={eager ? 'high' : 'auto'}
+        decoding="async"
+        onLoad={() => setIsLoaded(true)}
+        className={`optimized-img ${imgClassName} ${eager || isLoaded ? 'loaded' : ''}`}
+        style={imgStyle}
+      />
     </div>
   );
 };
